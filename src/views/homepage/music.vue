@@ -27,25 +27,12 @@
         </div>
         <!-- 歌词框 -->
         <div class="lyricsbar">
-            <!-- <div v-if="!lrcShow" ref="lrcDiv" class="lrc" @click="lrcShow = !lrcShow">
-                <p style="height:80px"/>
-                <span v-if="lrcList.length === 0">{{ lrc }}</span>
-                <ul v-if="lrcList.length >=0">
-                    <li v-for="(v,index) in lrcList" :key="index" :class="{currLrc:index===lrcIndex}">{{ v }}</li>
-                </ul>
-            </div> -->
+            <lyricsStyle1 v-if="Object.keys(datas.lrc).length !== 0" :audioStream="datas.audioStream" :lrc="datas.lrc" />
         </div>
         <!-- 播放工具框 -->
         <div class="toolbar">
-            <audio 
-                ref="audio" 
-                :src="datas.music.url" 
-                @ended="datas.next(1, true)" 
-                @timeupdate="datas.onTimeupdate" 
-                @loadedmetadata="datas.onLoadedmetadata" 
-                @waiting="datas.onWaiting"
-                controls
-                autoplay>垃圾浏览器不支持</audio>
+            <audio ref="audio" :src="datas.music.url" @ended="datas.next(1, true)" @timeupdate="datas.onTimeupdate"
+                @loadedmetadata="datas.onLoadedmetadata" @waiting="datas.onWaiting" controls autoplay>垃圾浏览器不支持</audio>
             <div class="music-name"><span v-text="datas.music.name" class="music-item-name"></span></div>
             <div class="toolmenu">
                 <i v-if="datas.playType === 0" title="循环播放" @click="datas.checkType">
@@ -88,24 +75,28 @@
 import { ref, reactive, onMounted, getCurrentInstance } from "vue";
 import { menu } from "@/api/menu.js";
 import URLList from "@/assets/config/bgImgs.json";
+import { formatLrcObj } from "@/api/lyrics.js";
+import lyricsStyle1 from "@/components//lyricsStyle1.vue";
 
 const audio = ref(null);
 const datas = reactive({
     load: true,
-    backgroundDiv: {
+    backgroundDiv: {//背景图
         backgroundImage: 'url(' + URLList[0] + ')',
         backgroundRepeat: 'no-repeat',
         backgroundSize: '100% 100%'
     },
     musicList: [...menu], // 当前总列表
-    iLikeList: localStorage.myLikeMusic ? JSON.parse(localStorage.myLikeMusic) : [],
-    isLikeList: false,
-    music: {},
-    playing: false,
-    nameKey: '',
-    playingIndex: 0,
-    playType: 0,
-    play() {
+    iLikeList: localStorage.myLikeMusic ? JSON.parse(localStorage.myLikeMusic) : [],//喜爱歌单
+    isLikeList: false,//是否为喜爱歌单
+    music: {},//当前播放歌曲
+    playing: false,//是否正在播放
+    nameKey: '',//搜索歌名
+    playingIndex: 0,//当前播放歌曲目录索引
+    playType: 0,//播放类型
+    lrc: {},//歌词
+    audioStream: null,//当前音频流
+    play() {//歌曲播放时调用
         audio.value.play()
         document.title = datas.music.name
         datas.playing = true
@@ -114,22 +105,22 @@ const datas = reactive({
             clearTimeout(timer)
         }, 100)
     },
-    pause() {
+    pause() {//歌曲暂停时调用
         audio.value.pause()
         datas.playing = false
     },
-    check(index) {
+    check(index) {//点击选择要播放的歌曲时调用
         datas.playing = false
         datas.music = datas.musicList[index]
         datas.playingIndex = index
         datas.checkBgURL(index)
         datas.play()
     },
-    resetList() {
+    resetList() {//搜索时调用
         let list = datas.isLikeList ? datas.iLikeList : menu
         datas.musicList = list.filter(item => item.name.includes(datas.nameKey))
     },
-    next(step, auto) {
+    next(step, auto) {//切换上下一曲时调用
         let index
         if (datas.playType === 0) {
             index = (datas.musicList.length + datas.playingIndex + step) % datas.musicList.length
@@ -143,22 +134,22 @@ const datas = reactive({
         datas.check(index)
         datas.checkBgURL(index)
     },
-    checkType() {
+    checkType() {//切换播放类型时调用
         datas.playType = (datas.playType + 1) % 3
     },
-    like(item) {
+    like(item) {//选择收藏时调用
         if (!datas.iLikeList.some(i => i.url === item.url)) {
             item['ilike'] = true
             datas.iLikeList.push(item)
             localStorage.myLikeMusic = JSON.stringify(datas.iLikeList)
         }
     },
-    dislike(item) {
+    dislike(item) {//取消收藏时调用
         item['ilike'] = false
         datas.iLikeList = datas.iLikeList.filter(i => i.url !== item.url)
         localStorage.myLikeMusic = JSON.stringify(datas.iLikeList)
     },
-    assignList(list) {
+    assignList(list) {//整理我喜欢的歌单
         let iLikeURLs = datas.iLikeList.map(i => i.url)
         list.forEach(i => {
             if (iLikeURLs.includes(i.url)) {
@@ -166,13 +157,13 @@ const datas = reactive({
             }
         })
     },
-    checkList() {
+    checkList() {//切换我喜欢的/全部列表时调用
         let list = menu?.filter(item => item.name.includes(datas.nameKey))
         datas.assignList(list)
         datas.isLikeList = !datas.isLikeList
         datas.musicList = datas.isLikeList ? datas.iLikeList : list
     },
-    checkBgURL(index) {
+    checkBgURL(index) {//切换背景图片
         index = index % URLList.length
         datas.backgroundDiv = {
             backgroundImage: 'url(' + URLList[index] + ')',
@@ -180,15 +171,18 @@ const datas = reactive({
             backgroundPosition: 'center top' // 背景图片位置
         }
     },
-    onTimeupdate(res){
-
+    onTimeupdate(res) {//用来更新音频流的,如：当前播放时间
+        datas.audioStream = res
     },
     // 语音元数据主要是语音的长度之类的数据
-    onLoadedmetadata(res){
+    async onLoadedmetadata(res) {
+        datas.lrc = {}
+        datas.lrc = await formatLrcObj(datas.music.lrc)
+        // console.log(datas.lrc);
         audio.value.waiting = false
-        console.log('歌曲时长：',parseInt(res.target.duration),'s');
+        console.log('歌曲时长：', parseInt(res.target.duration), 's');
     },
-    onWaiting(res){
+    onWaiting(res) {//音频开始等待时调用
         console.log('当音频开始等待', res)
     }
 })
@@ -226,7 +220,7 @@ body *::-webkit-scrollbar {
     right: 1vw;
     width: 56vw;
     min-width: 600px;
-    height: 65%;
+    height: 60vh;
     min-height: 100px;
     background: rgba(22, 22, 22, .2);
     border-radius: 20px;
@@ -240,7 +234,7 @@ body *::-webkit-scrollbar {
     right: 1vw;
     width: 56vw;
     min-width: 600px;
-    height: 20%;
+    height: 25vh;
     min-height: 100px;
     background: rgba(22, 22, 22, .2);
     border-radius: 20px;
@@ -296,16 +290,6 @@ body *::-webkit-scrollbar {
     box-shadow: 5px 5px 5px rgba(44, 44, 44, .4);
 }
 
-.music-list::-webkit-scrollbar-track,
-.music-list::-webkit-scrollbar-track-piece {
-    /*滚动条里面轨道*/
-    background: rgba(1, 34, 85, 0);
-}
-
-.music-list::-webkit-scrollbar-thumb {
-    border-radius: 18px;
-    background: rgba(18, 90, 255, 0.4);
-}
 
 .music-item {
     font-size: 18px;
@@ -353,20 +337,21 @@ body *::-webkit-scrollbar {
     position: relative;
 }
 
-.lrc{
-  height: 220px;
-  width: 240px;
-  margin: 0 auto;
-  overflow-y: scroll;
-}
-.lrc span{
-  color: #e65e5e
-}
-.lrc ul li{
-  list-style: none;
-  max-width: 220px;
-  padding: 0 4px;
-  line-height: 20px;
+.lrc {
+    height: 220px;
+    width: 240px;
+    margin: 0 auto;
+    overflow-y: scroll;
 }
 
+.lrc span {
+    color: #e65e5e
+}
+
+.lrc ul li {
+    list-style: none;
+    max-width: 220px;
+    padding: 0 4px;
+    line-height: 20px;
+}
 </style>

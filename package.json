@@ -12,6 +12,7 @@
     "axios": "^1.4.0",
     "element-plus": "^2.3.7",
     "lrc-parser": "^1.0.1",
+    "sass": "^1.63.6",
     "vue": "^3.3.4"
   },
   "devDependencies": {
