@@ -15,18 +15,18 @@ export default defineConfig({
       promiseImportName: i => `__tla_${i}`
     })
   ],
-  server: {
-    host: "0.0.0.0",
-    port: 5173,
-    proxy: {
-      // '/api': 'http://47.108.165.207:20088/ ',
-      // "/alm_framework": {
-      //   target: "http://47.108.165.207:20088/api",
-      //   timeout: 20 * 60 * 1000,
-      //   changeOrigin: true,
-      // },
-    },
-  },
+  // server: {
+  //   host: "0.0.0.0",
+  //   port: 5173,
+  //   proxy: {
+  //     '/api': 'http://localhost:444/',
+  //     // "/alm_framework": {
+  //     //   target: "http://47.108.165.207:20088/api",
+  //     //   timeout: 20 * 60 * 1000,
+  //     //   changeOrigin: true,
+  //     // },
+  //   },
+  // },
   base: '/music',
   resolve: {
     alias: {

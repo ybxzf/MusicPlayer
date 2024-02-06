@@ -29,7 +29,7 @@
     </div>
 </template>
 <script setup>
-import { reactive, ref, onMounted, watch, nextTick, defineProps } from 'vue';
+import { reactive, ref, onMounted, watch, nextTick } from 'vue';
 
 const props = defineProps(['lrc', 'audioStream']);
 const lrcElement = ref(null)

@@ -25,6 +25,21 @@ function getMenu() {
         })
 }
 
-const menu = await getMenu()
+// const menu = await getMenu()
+const gitURL = 'https://m.ybxzf.cn/static/musicMenu/'
+const menu = [
+    {
+        "name": "一千年以后 - 林俊杰.mp3",
+        "url": gitURL + '/' + "一千年以后 - 林俊杰.mp3",
+        "lrc": gitURL + '/' + "一千年以后 - 林俊杰.lrc",
+        "like": false,
+    },
+    {
+        "name": "Butter-Fly伴奏.mp3",
+        "url": gitURL + '/' + "Butter-Fly伴奏.mp3",
+        "lrc": gitURL + '/' + "Butter-Fly伴奏.mp3",
+        "like": false,
+    },
+]
 
 export { menu }
