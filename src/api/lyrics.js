@@ -9,7 +9,7 @@ function getLyrics(lrcURL) {
     return new Promise((resolve, reject) => {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', lrcURL, true);
-        xhr.overrideMimeType('text/plain; charset=gb2312');
+        xhr.overrideMimeType('text/plain; charset=utf8');
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 // 获取文件内容
