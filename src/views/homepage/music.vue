@@ -18,10 +18,10 @@
                 :class="item.url === datas.music.url ? 'playing' : ''">
                 <span class="music-item-name" :title="item.name" @click="datas.check(index)" v-text="item.name"></span>
                 <i v-if="item.ilike" class="ilike" @click="datas.dislike(item)">
-                    <el-button type="danger" circle>取消</el-button>
+                    <el-button type="danger" >取消</el-button>
                 </i>
                 <i v-else class="hae-icon icon-heartempty" @click="datas.like(item)">
-                    <el-button type="success" circle>收藏</el-button>
+                    <el-button type="success" >收藏</el-button>
                 </i>
             </div>
         </div>
@@ -36,35 +36,35 @@
             <div class="music-name"><span v-text="datas.music.name" class="music-item-name"></span></div>
             <div class="toolmenu">
                 <i v-if="datas.playType === 0" title="循环播放" @click="datas.checkType">
-                    <el-button type="success" circle>循环</el-button>
+                    <el-button type="success" >循环</el-button>
                 </i>
                 <i v-if="datas.playType === 1" title="单曲播放" @click="datas.checkType">
-                    <el-button type="success" circle>单曲</el-button>
+                    <el-button type="success" >单曲</el-button>
                 </i>
                 <i v-if="datas.playType === 2" title="随机播放" @click="datas.checkType">
-                    <el-button type="success" circle>随机</el-button>
+                    <el-button type="success" >随机</el-button>
                 </i>
                 <i @click="datas.next(-1)">
-                    <el-button type="primary" circle>上一曲</el-button>
+                    <el-button type="primary" >上一曲</el-button>
                 </i>
                 <i v-if="!datas.playing" @click="datas.play">
-                    <el-button type="success" circle>
+                    <el-button type="success" >
                         播放<!-- <img src="@/assets/imgs/play.svg"> -->
                     </el-button>
                 </i>
                 <i v-else @click="datas.pause">
-                    <el-button type="danger" circle>
+                    <el-button type="danger" >
                         暂停<!-- <img src="@/assets/imgs/pause.svg"> -->
                     </el-button>
                 </i>
                 <i @click="datas.next(1)">
-                    <el-button type="primary" circle>下一曲</el-button>
+                    <el-button type="primary" >下一曲</el-button>
                 </i>
                 <i v-if="datas.music.ilike" class="ilike" @click="datas.dislike(datas.music)">
-                    <el-button type="danger" circle>取消收藏</el-button>
+                    <el-button type="danger" >取消收藏</el-button>
                 </i>
                 <i v-else @click="datas.like(datas.music)">
-                    <el-button type="success" circle>加入收藏</el-button>
+                    <el-button type="success" >加入收藏</el-button>
                 </i>
             </div>
         </div>
@@ -290,6 +290,10 @@ body *::-webkit-scrollbar {
     box-shadow: 5px 5px 5px rgba(44, 44, 44, .4);
 }
 
+.el-button {
+    border-radius: 50%;
+    padding: 8px;
+}
 
 .music-item {
     font-size: 18px;
