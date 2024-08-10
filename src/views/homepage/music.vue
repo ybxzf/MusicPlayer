@@ -1,6 +1,9 @@
 <template>
     <div v-loading="datas.load" id="app"
-        @click.self="datas.checkBgURL(datas.playingIndex + Math.floor(Math.random() * 100))" :style="datas.backgroundDiv">
+        @click.self="datas.checkBgURL(datas.playingIndex + Math.floor(Math.random() * 100))"
+        :style="datas.backgroundDiv" style="
+        background-repeat: no-repeat;
+        background-size: 100% 100%;">
         <!-- 搜索框 -->
         <div class="search">
             <span style="width:160px">
@@ -18,16 +21,17 @@
                 :class="item.url === datas.music.url ? 'playing' : ''">
                 <span class="music-item-name" :title="item.name" @click="datas.check(index)" v-text="item.name"></span>
                 <i v-if="item.ilike" class="ilike" @click="datas.dislike(item)">
-                    <el-button type="danger" >取消</el-button>
+                    <el-button type="danger">取消</el-button>
                 </i>
                 <i v-else class="hae-icon icon-heartempty" @click="datas.like(item)">
-                    <el-button type="success" >收藏</el-button>
+                    <el-button type="success">收藏</el-button>
                 </i>
             </div>
         </div>
         <!-- 歌词框 -->
         <div class="lyricsbar">
-            <lyricsStyle1 v-if="Object.keys(datas.lrc).length !== 0" :audioStream="datas.audioStream" :lrc="datas.lrc" />
+            <lyricsStyle1 v-if="Object.keys(datas.lrc).length !== 0" :audioStream="datas.audioStream"
+                :lrc="datas.lrc" />
         </div>
         <!-- 播放工具框 -->
         <div class="toolbar">
@@ -36,35 +40,35 @@
             <div class="music-name"><span v-text="datas.music.name" class="music-item-name"></span></div>
             <div class="toolmenu">
                 <i v-if="datas.playType === 0" title="循环播放" @click="datas.checkType">
-                    <el-button type="success" >循环</el-button>
+                    <el-button type="success">循环</el-button>
                 </i>
                 <i v-if="datas.playType === 1" title="单曲播放" @click="datas.checkType">
-                    <el-button type="success" >单曲</el-button>
+                    <el-button type="success">单曲</el-button>
                 </i>
                 <i v-if="datas.playType === 2" title="随机播放" @click="datas.checkType">
-                    <el-button type="success" >随机</el-button>
+                    <el-button type="success">随机</el-button>
                 </i>
                 <i @click="datas.next(-1)">
-                    <el-button type="primary" >上一曲</el-button>
+                    <el-button type="primary">上一曲</el-button>
                 </i>
                 <i v-if="!datas.playing" @click="datas.play">
-                    <el-button type="success" >
+                    <el-button type="success">
                         播放<!-- <img src="@/assets/imgs/play.svg"> -->
                     </el-button>
                 </i>
                 <i v-else @click="datas.pause">
-                    <el-button type="danger" >
+                    <el-button type="danger">
                         暂停<!-- <img src="@/assets/imgs/pause.svg"> -->
                     </el-button>
                 </i>
                 <i @click="datas.next(1)">
-                    <el-button type="primary" >下一曲</el-button>
+                    <el-button type="primary">下一曲</el-button>
                 </i>
                 <i v-if="datas.music.ilike" class="ilike" @click="datas.dislike(datas.music)">
-                    <el-button type="danger" >取消收藏</el-button>
+                    <el-button type="danger">取消收藏</el-button>
                 </i>
                 <i v-else @click="datas.like(datas.music)">
-                    <el-button type="success" >加入收藏</el-button>
+                    <el-button type="success">加入收藏</el-button>
                 </i>
             </div>
         </div>

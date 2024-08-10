@@ -26,7 +26,7 @@ function getMenu() {
 }
 
 // const menu = await getMenu()
-const gitURL = 'https://m.ybxzf.cn/static/musicMenu/'
+const gitURL = 'https://github.ybxzf.cn/static/musicMenu/'
 const menu = [
     {
         "name": "一千年以后 - 林俊杰.mp3",
